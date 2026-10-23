@@ -1,0 +1,17 @@
+
+---
+- name: Recover the failed NGINX container
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Start the NGINX container if it is stopped
+      ansible.builtin.command:
+        cmd: docker start self-healing-nginx
+      register: nginx_start
+      changed_when: nginx_start.rc == 0
+      failed_when: >
+        nginx_start.rc != 0 and
+        'is already running' not in
+        (nginx_start.stdout | lower)

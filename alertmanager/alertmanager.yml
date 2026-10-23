@@ -1,0 +1,11 @@
+route:
+  receiver: "recovery-webhook"
+  group_wait: 5s
+  group_interval: 30s
+  repeat_interval: 1h
+
+receivers:
+  - name: "recovery-webhook"
+    webhook_configs:
+      - url: "http://recovery-webhook:5000/alert"
+        send_resolved: false
