@@ -1,4 +1,3 @@
-
 groups:
   - name: nginx-health-alerts
     rules:

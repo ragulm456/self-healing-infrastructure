@@ -1,3 +1,131 @@
+## 📸 Project Screenshots
+
+### Public NGINX Website
+
+![NGINX Website](screenshots/nginx-website.png)
+
+### Prometheus Health Monitoring
+
+![Prometheus Health Check](screenshots/prometheus-health.png)
+
+### Automated Recovery Logs
+
+![Ansible Recovery Logs](screenshots/recovery-logs.png)
+
+### AWS EC2 Deployment
+
+![AWS EC2 Instance](screenshots/aws-instance.png)
+
+## ☁️ AWS Cloud Deployment
+
+The project was deployed on an AWS EC2 Ubuntu instance using Docker Compose.
+
+### Prerequisites
+
+- An AWS EC2 Ubuntu instance
+- Docker Engine and Docker Compose
+- Git
+- An EC2 security group configured with restricted SSH access
+- A GitHub account
+
+### 1. Connect to the EC2 Instance
+
+Connect using SSH from your local terminal:
+
+```bash
+ssh -i /path/to/self-healing-key.pem ubuntu@YOUR_PUBLIC_IP
+```
+
+Replace the key path and public IP with your actual values. Keep your private key secure.
+
+### 2. Clone the Repository
+
+```bash
+git clone https://github.com/ragulm456/self-healing-infrastructure.git
+cd self-healing-infrastructure
+```
+
+### 3. Validate the Configuration
+
+```bash
+docker compose config
+```
+
+### 4. Build and Start the Services
+
+```bash
+docker compose up -d --build
+```
+
+Check the containers:
+
+```bash
+docker compose ps
+```
+
+### 5. Access the Website
+
+Open the following URL in your browser:
+
+```text
+http://YOUR_PUBLIC_IP
+```
+
+This assumes NGINX is published on port 80 and the EC2 security group allows inbound HTTP traffic.
+
+### 6. Verify Monitoring
+
+Connect to the server and run:
+
+```bash
+curl -s "http://localhost:9090/api/v1/query?query=probe_success"
+```
+
+A value of `1` indicates a successful HTTP health check.
+
+### 7. Test Automated Recovery
+
+For a controlled demonstration, stop the NGINX container:
+
+```bash
+docker stop self-healing-nginx
+```
+
+Wait for Prometheus to detect the failure and Alertmanager to send the alert.
+
+Inspect the recovery logs:
+
+```bash
+docker logs self-healing-recovery --tail 60
+```
+
+Verify that NGINX has restarted:
+
+```bash
+docker ps --filter "name=self-healing-nginx"
+curl -I http://localhost
+```
+
+After successful recovery, NGINX should be running and the HTTP response should be `200 OK`.
+
+### 8. Stop the Services
+
+When the demonstration is complete, stop the Docker Compose services:
+
+```bash
+docker compose down
+```
+
+This stops and removes the Compose containers and network. It does not stop the EC2 virtual machine or remove the associated storage resources.
+
+## 🔐 Cloud Security and Cost Notes
+
+- Restrict SSH access to your own IP address.
+- Expose only the required public web port.
+- Keep Prometheus, Alertmanager, Blackbox Exporter, and the recovery webhook private or protected by appropriate access controls.
+- The Docker socket grants powerful access to the host. Use a more restricted recovery mechanism before production deployment.
+- Check AWS account-plan eligibility, credits, and usage regularly. Storage and other resources may continue to incur costs even when an instance is stopped.
+
 # Self-Healing Infrastructure with Prometheus, Alertmanager & Ansible
 
 ## 📌 Project Overview
