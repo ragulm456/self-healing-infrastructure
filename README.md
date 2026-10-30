@@ -2,7 +2,7 @@
 
 ### Public NGINX Website
 
-![NGINX Website](screenshots/nginx-website.png)
+![NGINX Website](screenshots/Screenshot 2026-10-30 120529.png)
 
 ### Prometheus Health Monitoring
 
